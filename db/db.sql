@@ -1,0 +1,2 @@
+CREATE DATABASE staff;
+USE staff;
