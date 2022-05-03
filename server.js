@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 // const { displayDepartments, addDepartment } = require('./routes/department');
+const addEmployee = require('./routes/employee');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -14,9 +15,9 @@ const db = mysql.createConnection(
 );
 
 
-const con = mysql.createConnection(
-  {host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'}
-);
+// const con = mysql.createConnection(
+//   {host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'}
+// );
 
 const startPrompt = () => {
   return inquirer
@@ -67,7 +68,21 @@ const startPrompt = () => {
 async function displayDepartments() {
   const mysql = require('mysql2/promise');
   const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
-  const [rows, fields] = await connection.execute(`SELECT * FROM department`);
+  const [rows, fields] = await connection.execute(`SELECT name AS Departments FROM department`);
+  console.table(rows);
+};
+
+async function displayRoles() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
+  const [rows, fields] = await connection.execute(`SELECT * FROM role`);
+  console.table(rows);
+};
+
+async function displayEmployees() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
+  const [rows, fields] = await connection.execute(`SELECT * FROM employee`);
   console.table(rows);
 };
 

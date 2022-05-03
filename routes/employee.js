@@ -1,11 +1,11 @@
 const inquirer = require('inquirer');
 
 //ADD EMPLOYEE prompt
-const promptEmployee = (employeeData) => {
+const addEmployee = (employeeData) => {
   // If there's no 'employee' array property, create one
-  if (!employeeData.staff) {
-    employeeData.staff = [];
-  }
+  // if (!employeeData.staff) {
+  //   employeeData.staff = [];
+  // }
   return inquirer.prompt ([
     {
       type: 'input',
@@ -22,7 +22,7 @@ const promptEmployee = (employeeData) => {
     {
       type: 'input',
       name: 'last_name',
-      message: "Please enter the last name of the employee",
+      message: "Please enter the last name of the employee.",
       validate: lastName => {
         if (lastName) {
           return true;
@@ -59,9 +59,9 @@ const promptEmployee = (employeeData) => {
 
   //add employee to staff array
   .then(employeeInfo => {
-    employeeData.staff.push(employeeInfo);
+    // employeeData.staff.push(employeeInfo);
     return employeeData;
   });
 };
 
-module.exports = Employee;
+module.exports = addEmployee;
