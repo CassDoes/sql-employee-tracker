@@ -1,4 +1,13 @@
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
+
+//displays all employees
+async function displayEmployees() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
+  const [rows, fields] = await connection.execute(`SELECT * FROM employee`);
+  console.table(rows);
+};
 
 //ADD EMPLOYEE prompt
 const addEmployee = (employeeData) => {
@@ -35,25 +44,11 @@ const addEmployee = (employeeData) => {
       type: 'input',
       name: 'role',
       message: "What is the employee's role?",
-      validate: employeeRole => {
-        if (employeeRole) {
-          return true;
-        } else {
-          return false;
-        }
-      }
     },
     {
-      type: 'input',
+      type: 'list',
       name: 'manager_name',
       message: "Who is the employee's manager?",
-      validate: managerName => {
-        if (managerName) {
-          return true;
-        } else {
-          return false;
-        }
-      }
     },
   ])
 
@@ -64,4 +59,6 @@ const addEmployee = (employeeData) => {
   });
 };
 
-module.exports = addEmployee;
+
+
+module.exports = { addEmployee, displayEmployees };

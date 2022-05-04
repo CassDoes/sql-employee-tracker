@@ -1,7 +1,9 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-// const { displayDepartments, addDepartment } = require('./routes/department');
-const addEmployee = require('./routes/employee');
+
+const { displayDepartments, addDepartment } = require('./routes/department');
+const { addEmployee, displayEmployees } = require('./routes/employee');
+const { addRole, displayRoles } = require('./routes/role');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -14,10 +16,6 @@ const db = mysql.createConnection(
   console.log('Connected to the staff database.')
 );
 
-
-// const con = mysql.createConnection(
-//   {host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'}
-// );
 
 const startPrompt = () => {
   return inquirer
@@ -65,49 +63,7 @@ const startPrompt = () => {
   })
 };
 
-async function displayDepartments() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
-  const [rows, fields] = await connection.execute(`SELECT name AS Departments FROM department`);
-  console.table(rows);
-};
 
-async function displayRoles() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
-  const [rows, fields] = await connection.execute(`SELECT * FROM role`);
-  console.table(rows);
-};
-
-async function displayEmployees() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
-  const [rows, fields] = await connection.execute(`SELECT * FROM employee`);
-  console.table(rows);
-};
-
-const addDepartment = () => {
-  return inquirer.prompt ([
-    {
-      type: 'input',
-      name: 'name',
-      message: "What is the name of the department you would like to add?",      
-    },
-  ])
-  .then(departmentData => {
-    const sql = `INSERT INTO department (name)
-    VALUES (?)`;
-    const params = departmentData.name;
-    
-    con.promise().query(sql, params, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log('Added ' + departmentData.name + ' to the STAFF database');
-    })
-  })
-  .then( () => con.end());
-};
 
 startPrompt();
 

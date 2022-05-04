@@ -1,11 +1,21 @@
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
+
+//DISPLAYS all ROLES
+async function displayRoles() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
+  const [rows, fields] = await connection.execute(`SELECT * FROM role`);
+  console.table(rows);
+};
+
 //UPDATE EMPLOYEE ROLE prompt
-const promptRole = (updateRole) => {
+const updateRole = () => {
   // If there's no 'employee' array property, create one
-  if (!updateRole.employeeRole) {
-    updateRole.employeeRole = [];
-  }
+  // if (!updateRole.employeeRole) {
+  //   updateRole.employeeRole = [];
+  // }
 
   return inquirer.prompt ([
     {
@@ -26,3 +36,7 @@ const promptRole = (updateRole) => {
     return updateRole;
   });
 };
+
+
+
+module.exports = { updateRole, displayRoles };
