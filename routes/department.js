@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const { startPrompt } = require('../server');
+// const { startPrompt } = require('../server');
 
 const con = mysql.createConnection(
   {host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'}
@@ -11,7 +11,6 @@ async function displayDepartments() {
   const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
   const [rows, fields] = await connection.execute(`SELECT * FROM department`);
   console.table(rows);
-  startPrompt()
 };
 
 // async function addDepartment() {

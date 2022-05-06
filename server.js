@@ -1,9 +1,13 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const { displayRoles, updateRole } = require('./routes/role');
+const { addDepartment } = require('./routes/department');
+const { allowedNodeEnvironmentFlags } = require('process');
 
-const { displayDepartments, addDepartment } = require('./routes/department');
-const { addEmployee, displayEmployees } = require('./routes/employee');
-const { addRole, displayRoles, updateRole } = require('./routes/role');
+// const { displayDepartments, addDepartment } = require('./routes/department');
+// const { addEmployee, displayEmployees } = require('./routes/employee');
+// const { addRole, displayRoles, updateRole } = require('./routes/role');
+// const { start } = require('repl');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -17,10 +21,9 @@ const db = mysql.createConnection(
 );
 
 
-const startPrompt = () => {
-  return inquirer
-  .prompt([
-    {
+const startPrompt = async () => {
+  try {
+    let userSelection = await inquirer.prompt({
       type: 'list',
       name: 'menu',
       message: 'Please select an option from the following menu.',
@@ -33,37 +36,56 @@ const startPrompt = () => {
         'Add an employee', 
         'Update an employee role'
       ]
-    }
-  ])
-  
-  .then(menuOptions => {
-    if (menuOptions.menu === 'View all departments') {
+  });
+
+  switch (userSelection.menu) {
+    case 'View all departments':
       displayDepartments();
-    } 
-    else if (menuOptions.menu === 'View all roles') {
+      break;
+
+    case 'View all roles':
       displayRoles();
-    }
-    else if (menuOptions.menu === 'View all employees') {
+      break;
+
+    case 'View all employees':
       displayEmployees();
-    }
-    else if (menuOptions.menu === 'Add a department') {
+      break;
+
+    case 'Add a department':
       addDepartment();
-    }
-    else if (menuOptions.menu === 'Add a role') {
+      break;
+
+    case 'Add a role':
       addRole();
-    }
-    else if (menuOptions.menu === 'Add an employee') {
+      break;
+      
+    case 'Add an employee':
       addEmployee();
-    }
-    else if (menuOptions.menu === 'Update an employee role') {
+      break;
+
+    case 'Update an employee role':
       updateRole();
-    } else {
-      console.log("If you would like to exit application simply press 'ctrl + c' at any time.")
-    }
-  })
+      break;
+    
+    case 'I am done':
+      db.end();
+  }
+} catch (err) {
+    console.log(err);
+    startPrompt();
+  } 
+};
+
+async function displayDepartments() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'staff'});
+  const [rows, fields] = await connection.execute(`SELECT * FROM department`);
+  console.table(rows);
+  startPrompt();
 };
 
 startPrompt();
+
 
 // //return all employees
 // db.query(`SELECT * FROM employee`, (err, rows) => {
@@ -99,5 +121,3 @@ startPrompt();
 //   }
 //   console.log(result);
 // });
-
-module.exports = startPrompt;
