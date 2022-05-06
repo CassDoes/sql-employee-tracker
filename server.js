@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 
 const { displayDepartments, addDepartment } = require('./routes/department');
 const { addEmployee, displayEmployees } = require('./routes/employee');
-const { addRole, displayRoles } = require('./routes/role');
+const { addRole, displayRoles, updateRole } = require('./routes/role');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -62,8 +62,6 @@ const startPrompt = () => {
     }
   })
 };
-
-
 
 startPrompt();
 
