@@ -46,6 +46,10 @@ class DB {
   addNewRole(role) {
     return this.connection.query(`INSERT INTO role SET ?`, role)
   }
+
+  updateEmployeeRole(roleID, employeeID) {
+    return this.connection.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [roleID, employeeID])
+  }
 }
 
 module.exports = new DB(connection);

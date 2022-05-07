@@ -186,33 +186,52 @@ async function addEmployee() {
 };
 
 //UPDATE an EMPLOYEE
-const updateRole = () => {
-  return inquirer.prompt ([
+const updateRole = async () => {
+  const getEmployees = await db.findAllEmployees();
+  const getRoles = await db.findAllRoles();
+
+  const employeeChoices = getEmployees.map(({ Employee, ID }) => ({ name: Employee, value: ID })) 
+  const roleChoices = getRoles.map(({ title, id }) => ({ name: title, value: id })) 
+
+  const { employee, employee_role } = await inquirer.prompt ([
     {
       type: 'list',
-      name: 'employee_name',
+      name: 'employee',
       message: "Which employee's role do you want to update?",
-      choices: []   
+      choices: employeeChoices   
     },
     {
-      type: 'input',
+      type: 'list',
       name: 'employee_role',
       message: "What is the name of the employee's new role?",
+      choices: roleChoices
     },
   ])
-  .then(employeeRole => {
-    const sql = `INSERT INTO role (employee_role)
-    VALUES (?)`;
-    const params = employeeRole.name
 
-    db.promise().query(sql, params, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    })
-    console.log('Added ' + employeeRole.name + ' to the COMPANY database');
-  })
-  .then(startPrompt);
+  await db.updateEmployeeRole(employee_role, employee)
+  console.log('Employee role has been updated');
+  startPrompt();
+
+
+//update employee in DB
+//console that you updated the employee role
+//recall startPrompt
+
+
+  
+  // .then(employeeRole => {
+  //   const sql = `INSERT INTO role (employee_role)
+  //   VALUES (?)`;
+  //   const params = employeeRole.name
+
+  //   db.promise().query(sql, params, (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   })
+  //   console.log('Added ' + employeeRole.name + ' to the COMPANY database');
+  // })
+  // .then(startPrompt);
 };
 
 startPrompt();
