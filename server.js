@@ -111,49 +111,32 @@ const addDepartment = async () => {
 
 //ADD a ROLE
 const addRole = async () => {
-
   const getDepartments = await db.findAllDepartments();
 
   const departmentChoices = getDepartments.map(({ name, id }) => ({ name: name, value: id })) 
-  console.log(departmentChoices)
 
+  const createNewRole = await inquirer.prompt ([
+    {
+      type: 'input',
+      name: 'title',
+      message: "What is the name of the position you would like to add?",      
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "What is the salary of the position you would like to add?", 
+    },
+    {
+      type: 'list',
+      name: 'department_id',
+      message: "What is the department of the position you would like to add?",
+      choices: departmentChoices
+    },
+  ])
 
-  // const createNewRole = await inquirer.prompt ([
-  //   {
-  //     type: 'input',
-  //     name: 'title',
-  //     message: "What is the name of the position you would like to add?",      
-  //   },
-  //   {
-  //     type: 'input',
-  //     name: 'salary',
-  //     message: "What is the salary of the position you would like to add?", 
-  //   },
-  //   {
-  //     type: 'input',
-  //     name: 'department_id',
-  //     message: "What is the department of the position you would like to add?",
-  //   },
-  // ])
-
-    
-  // ])
-  // .then(roleData => {
-  //   const sql = `INSERT INTO role (title)
-  //   VALUES (?)`;
-  //   const params = roleData.name;
-    
-  //   db.promise().query(sql, params, (err, result) => {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //   })
-  //   console.log('====================\nAdded ' + roleData.name + ' to the COMPANY database.\n====================');
-  // })
-  // .then (
-  //   displayRoles,
-  //   startPrompt
-  //   )
+  await db.addNewRole(createNewRole)
+  console.log('Added new role to company database')
+  startPrompt();
 };
 
 //ADD an EMPLOYEE*
