@@ -1,9 +1,6 @@
 const inquirer = require('inquirer');
-const db = require('./db/DB')
-
-// const { displayDepartments, addDepartment } = require('./routes/department');
-// const { addEmployee, displayEmployees } = require('./routes/employee');
-// const { addRole, displayRoles, updateRole } = require('./routes/role');
+const db = require('./db/DB');
+require('console.table');
 
 const startPrompt = async () => {
   try {
@@ -62,16 +59,10 @@ const startPrompt = async () => {
 
 //VIEW all DEPARTMENTS*
 async function displayDepartments() {
-  // const mysql = require('mysql2/promise');
-  // const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  // const allDepartments = await connection.execute(`
-  //   SELECT name AS Departments 
-  //   FROM department
-  // `);
-  // console.table(allDepartments[0]);
-  // startPrompt();
+
   const allDepartments = await db.findAllDepartments()
-  console.log(allDepartments);
+  console.table(allDepartments);
+  startPrompt();
 };
 
 
