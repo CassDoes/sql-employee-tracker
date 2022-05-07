@@ -91,31 +91,22 @@ async function displayEmployees() {
   startPrompt();
 }
 
-//ADD a DEPARTMENT*
-const addDepartment = () => {
-  return inquirer.prompt ([
+//ADD a DEPARTMENT
+const addDepartment = async () => {
+
+  const createDepartment = await inquirer.prompt ([
     {
       type: 'input',
       name: 'name',
       message: "What is the name of the department you would like to add?",      
     },
   ])
-  .then(departmentData => {
-    const sql = `INSERT INTO department (name)
-    VALUES (?)`;
-    const params = departmentData.name;
-    
-    db.promise().query(sql, params, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    })
-    console.log('====================\nAdded ' + departmentData.name + ' to the COMPANY database.\n====================');
-  })
-  .then (
-    displayDepartments,
-    startPrompt
-    )
+
+  await db.addNewDepartment(createDepartment);
+
+  console.log('Added new department to database');
+
+  startPrompt();
 };
 
 //ADD a ROLE
@@ -155,7 +146,7 @@ const addRole = () => {
     )
 };
 
-//ADD an EMPLOYEE
+//ADD an EMPLOYEE*
 async function addEmployee() {
   const roles = await db.findAllRoles();
   const reportTo = await db.findAllManagers();
