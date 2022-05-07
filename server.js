@@ -1,5 +1,5 @@
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const db = require('./db/DB')
 
 // const { displayDepartments, addDepartment } = require('./routes/department');
 // const { addEmployee, displayEmployees } = require('./routes/employee');
@@ -62,14 +62,16 @@ const startPrompt = async () => {
 
 //VIEW all DEPARTMENTS*
 async function displayDepartments() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const allDepartments = await connection.execute(`
-    SELECT name AS Departments 
-    FROM department
-  `);
-  console.table(allDepartments[0]);
-  startPrompt();
+  // const mysql = require('mysql2/promise');
+  // const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
+  // const allDepartments = await connection.execute(`
+  //   SELECT name AS Departments 
+  //   FROM department
+  // `);
+  // console.table(allDepartments[0]);
+  // startPrompt();
+  const allDepartments = await db.findAllDepartments()
+  console.log(allDepartments);
 };
 
 
@@ -171,10 +173,9 @@ const addRole = () => {
       message: "What is the salary of the position you would like to add?", 
     },
     {
-      type: 'list',
+      type: 'input',
       name: 'department',
       message: "What is the department of the position you would like to add?",
-      choice: 
     },
   ])
   .then(roleData => {
