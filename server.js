@@ -69,7 +69,6 @@ async function displayDepartments() {
   startPrompt();
 };
 
-
 //VIEW all ROLES*
 async function displayRoles() {
   const allRoles = await db.findAllRoles()
@@ -91,7 +90,7 @@ async function displayEmployees() {
   startPrompt();
 }
 
-//ADD a DEPARTMENT
+//ADD a DEPARTMENT*
 const addDepartment = async () => {
 
   const createDepartment = await inquirer.prompt ([

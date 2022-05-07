@@ -38,6 +38,10 @@ class DB {
   addNewEmployee(employee) {
     return this.connection.query(`INSERT INTO employee SET ?`, employee)
   }
+
+  addNewDepartment(department) {
+    return this.connection.query(`INSERT INTO department SET ?`, department)
+  }
 }
 
 module.exports = new DB(connection);
