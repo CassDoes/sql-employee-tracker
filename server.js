@@ -5,17 +5,6 @@ const inquirer = require('inquirer');
 // const { addEmployee, displayEmployees } = require('./routes/employee');
 // const { addRole, displayRoles, updateRole } = require('./routes/role');
 
-// Connect to database
-const db = mysql.createConnection(
-  {
-    host: 'localhost',
-    user: 'root',
-    password: 'My-pass6',
-    database: 'company'
-  }
-);
-
-
 const startPrompt = async () => {
   try {
     let userSelection = await inquirer.prompt({
@@ -75,11 +64,11 @@ const startPrompt = async () => {
 async function displayDepartments() {
   const mysql = require('mysql2/promise');
   const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const [rows, fields] = await connection.execute(`
+  const allDepartments = await connection.execute(`
     SELECT name AS Departments 
     FROM department
   `);
-  console.table(rows);
+  console.table(allDepartments[0]);
   startPrompt();
 };
 
@@ -117,6 +106,30 @@ async function displayEmployees() {
   startPrompt();
 };
 
+//FIND all ROLES*
+async function findRoles() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
+  const allRoles = await connection.execute(`
+    SELECT title, id
+     FROM role;
+  `);
+  return allRoles[0];
+};
+
+//FIND all MANAGERS*
+async function findManagers() {
+  const mysql = require('mysql2/promise');
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
+  const allManagers = await connection.execute(`
+  SELECT CONCAT (first_name,' ',last_name) AS managerName,
+  id AS employeeID
+  FROM employee
+  WHERE manager_id IS NULL;
+  `);
+    return allManagers[0];
+};
+
 //ADD a DEPARTMENT*
 const addDepartment = () => {
   return inquirer.prompt ([
@@ -145,60 +158,60 @@ const addDepartment = () => {
 };
 
 //ADD a ROLE
-
+const addRole = () => {
+  return inquirer.prompt ([
+    {
+      type: 'input',
+      name: 'name',
+      message: "What is the name of the position you would like to add?",      
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "What is the salary of the position you would like to add?", 
+    },
+    {
+      type: 'list',
+      name: 'department',
+      message: "What is the department of the position you would like to add?",
+      choice: 
+    },
+  ])
+  .then(roleData => {
+    const sql = `INSERT INTO role (title)
+    VALUES (?)`;
+    const params = roleData.name;
+    
+    db.promise().query(sql, params, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+    })
+    console.log('====================\nAdded ' + roleData.name + ' to the COMPANY database.\n====================');
+  })
+  .then (
+    displayRoles,
+    startPrompt
+    )
+};
 
 //ADD an EMPLOYEE
 async function addEmployee() {
   const roles = await findRoles();
   const reportTo = await findManagers();
 
-  // `SELECT title, id, FROM roles;
-  // `
-  
-  
-  // let newEmployeeRole = `
-  //   SELECT role.title AS title, 
-  //   role.id AS roleID,
-  //   employee.id AS employeeID,
-  //   CONCAT (manager.last_name,', ',manager.first_name) AS manager
-  //   FROM employee
-  //   LEFT JOIN role ON employee.role_id = role.id
-  //   LEFT JOIN employee manager ON employee.manager_id = manager.id;
-  //   `
-
-  //let newEmployeeManager = `
-    // SELECT manager.first_name, manager.last_name, id AS iD
-    // FROM employee
-    // WHERE manager_id IS NULL;`
-
-    // db.promise().query(newEmployeeRole)
-    //   .then( ([rows]) => {
-        const position = roles.map(({ title, id }) => ({ name: title, value: id }))
-        const managerName = reportTo.map(({ manager, employeeID }) => ({ name: manager, value: employeeID }))
+    const position = roles.map(({ title, id }) => ({ name: title, value: id }))
+    const managerName = reportTo.map(({ managerName, employeeID }) => ({ name: managerName, value: employeeID }))
       return inquirer.prompt ([
         {
           type: 'input',
           name: 'first',
-          message: "Please enter the first name of the employee.",
-          validate: firstName => {
-            if (firstName) {
-              return true;
-            } else {
-              return false;
-            }
-          }      
+          message: "Please enter the first name of the employee."     
         },
         {
           type: 'input',
           name: 'last',
-          message: "Please enter the last name of the employee.",
-          validate: lastName => {
-            if (lastName) {
-              return true;
-            } else {
-              return false;
-            }
-          }
+          message: "Please enter the last name of the employee."
         },
         {
           type: 'list',
@@ -214,7 +227,6 @@ async function addEmployee() {
         },
       ])
 
-
   .then(employeeData => {
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?,?,?,?)`;
@@ -229,43 +241,6 @@ async function addEmployee() {
   })
     .then(startPrompt);
 };
-
-// class DB{
-//   constructor(connection){
-//     this.connection =connection
-//   }
-//   findAllDepartments(){
-//     return this.connection.promise().query(
-//       "SELECT department.id, department.name FROM department"
-//     )
-//   }
-// }
-
-// function viewEmployeesByDeparment () {
-//   findAllDepartments()
-//   .then(([rows]) => {
-//     let department = rows
-//     const departmentChoices = department.map(({id, name}) => ({
-//       name:name,
-//       value:id
-//     }))
-//   prompt([
-//     {
-//       type: "list",
-//       name: "departmentId",
-//       message: "Which department would you like to choose?",
-//       choices: [departmentChoices]
-//     }
-//   ])
-//     .then(res => db.findAllEmployeesByDepartment(res.departmentId))
-//     .then(([rows])=> {
-//       let employees = rows;
-//       console.log("\n");
-//       console.table(employees)
-//     })
-//     .then(() => startPrompt())
-//   });
-// }
 
 //UPDATE an EMPLOYEE
 const updateRole = () => {
@@ -297,7 +272,4 @@ const updateRole = () => {
   .then(startPrompt);
 };
 
-
 startPrompt();
-
-module.exports = startPrompt;

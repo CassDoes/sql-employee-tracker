@@ -19,11 +19,9 @@
   },
   "homepage": "https://github.com/CassDoes/sql-employee-tracker#readme",
   "dependencies": {
-    "express": "^4.18.1",
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.0",
     "inquirer": "^8.2.4",
     "mysql2": "^2.3.3"
-  },
-  "devDependencies": {
-    "jest": "^28.0.3"
   }
 }
