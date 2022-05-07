@@ -11,7 +11,8 @@ const startPrompt = async () => {
       choices: [
         'View all departments', 
         'View all roles', 
-        'View all employees', 
+        'View all employees',
+        'View all managers', 
         'Add a department', 
         'Add a role', 
         'Add an employee', 
@@ -30,6 +31,10 @@ const startPrompt = async () => {
 
     case 'View all employees':
       displayEmployees();
+      break;
+
+    case 'View all managers':
+      displayManagers();
       break;
 
     case 'Add a department':
@@ -59,7 +64,6 @@ const startPrompt = async () => {
 
 //VIEW all DEPARTMENTS*
 async function displayDepartments() {
-
   const allDepartments = await db.findAllDepartments()
   console.table(allDepartments);
   startPrompt();
@@ -73,49 +77,19 @@ async function displayRoles() {
   startPrompt();
 };
 
+//VIEW all MANAGERS*
+async function displayManagers() {
+  const allManagers = await db.findAllManagers()
+  console.table(allManagers);
+  startPrompt();
+}
+
 //VIEW all EMPLOYEES*
 async function displayEmployees() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const [rows, fields] = await connection.execute(`
-    SELECT employee.id AS ID, 
-    CONCAT (employee.last_name,', ',employee.first_name) AS Employee,
-    role.title AS Position,
-    department.name AS Department,
-    role.salary AS Salary,
-    CONCAT (manager.last_name,', ',manager.first_name) AS Manager
-    FROM employee
-    LEFT JOIN role ON employee.role_id = role.id
-    LEFT JOIN department ON role.department_id = department.id
-    LEFT JOIN employee manager ON employee.manager_id = manager.id
-  `);
-  console.table(rows);
+  const allEmployees = await db.findAllEmployees()
+  console.table(allEmployees);
   startPrompt();
-};
-
-//FIND all ROLES*
-async function findRoles() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const allRoles = await connection.execute(`
-    SELECT title, id
-     FROM role;
-  `);
-  return allRoles[0];
-};
-
-//FIND all MANAGERS*
-async function findManagers() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const allManagers = await connection.execute(`
-  SELECT CONCAT (first_name,' ',last_name) AS managerName,
-  id AS employeeID
-  FROM employee
-  WHERE manager_id IS NULL;
-  `);
-    return allManagers[0];
-};
+}
 
 //ADD a DEPARTMENT*
 const addDepartment = () => {
@@ -183,49 +157,48 @@ const addRole = () => {
 
 //ADD an EMPLOYEE
 async function addEmployee() {
-  const roles = await findRoles();
-  const reportTo = await findManagers();
+  const roles = await db.findAllRoles();
+  const reportTo = await db.findAllManagers();
 
-    const position = roles.map(({ title, id }) => ({ name: title, value: id }))
-    const managerName = reportTo.map(({ managerName, employeeID }) => ({ name: managerName, value: employeeID }))
-      return inquirer.prompt ([
-        {
-          type: 'input',
-          name: 'first',
-          message: "Please enter the first name of the employee."     
-        },
-        {
-          type: 'input',
-          name: 'last',
-          message: "Please enter the last name of the employee."
-        },
-        {
-          type: 'list',
-          name: 'role',
-          message: "What is the employee's role?",
-          choices: position
-        },
-        {
-          type: 'list',
-          name: 'manager',
-          message: "Who is the employee's manager?",
-          choices: managerName
-        },
-      ])
+  const position = roles.map(({ title, id }) => ({ name: title, value: id })) 
+  const employeeManager = reportTo.map(({ managerName, employeeID }) => ({ name: managerName, value: employeeID }))
 
-  .then(employeeData => {
-    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES (?,?,?,?)`;
-    const params = [employeeData.first, employeeData.last, employeeData.role, employeeData.manager];
-    
-    db.promise().query(sql, params, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    })
-    console.log('Added ' + employeeData.first + ' to the COMPANY database');
-  })
-    .then(startPrompt);
+  const newEmployee = await inquirer.prompt ([
+    {
+      type: 'input',
+      name: 'first_name',
+      message: "Please enter the first name of the employee."     
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: "Please enter the last name of the employee."
+    },
+  ])
+
+  const { role } = await inquirer.prompt ([
+    {
+      type: 'list',
+      name: 'role',
+      message: "What is the employee's role?",
+      choices: position
+    },
+  ])
+
+  newEmployee.role_id = role
+
+  const { manager } = await inquirer.prompt ([
+    {
+      type: 'list',
+      name: 'manager',
+      message: "Who is the employee's manager?",
+      choices: employeeManager
+    },
+  ])
+  newEmployee.manager_id = manager
+  await db.addNewEmployee(newEmployee)
+  console.log(`Added new employee to company database`)
+  startPrompt();
 };
 
 //UPDATE an EMPLOYEE
