@@ -1,8 +1,8 @@
 const inquirer = require('inquirer');
-const { findAllDepartments } = require('./db/DB');
 const db = require('./db/DB');
 require('console.table');
 
+//Initial MENU starts here
 const startPrompt = async () => {
     let userSelection = await inquirer.prompt({
       type: 'list',
@@ -59,35 +59,35 @@ const startPrompt = async () => {
   }
 };
 
-//VIEW all DEPARTMENTS*
+//VIEW all DEPARTMENTS
 async function displayDepartments() {
   const allDepartments = await db.findAllDepartments()
   console.table(allDepartments);
   startPrompt();
 };
 
-//VIEW all ROLES*
+//VIEW all ROLES
 async function displayRoles() {
   const allRoles = await db.findAllRoles()
   console.table(allRoles);
   startPrompt();
 };
 
-//VIEW all MANAGERS*
+//VIEW all MANAGERS
 async function displayManagers() {
   const allManagers = await db.findAllManagers()
   console.table(allManagers);
   startPrompt();
 }
 
-//VIEW all EMPLOYEES*
+//VIEW all EMPLOYEES
 async function displayEmployees() {
   const allEmployees = await db.findAllEmployees()
   console.table(allEmployees);
   startPrompt();
 }
 
-//ADD a DEPARTMENT*
+//ADD a DEPARTMENT
 const addDepartment = async () => {
 
   const createDepartment = await inquirer.prompt ([
@@ -100,7 +100,7 @@ const addDepartment = async () => {
 
   await db.addNewDepartment(createDepartment);
 
-  console.log('Added new department to database');
+  console.log('Added ' + createDepartment.name + ' department to COMPANY database');
 
   startPrompt();
 };
@@ -109,7 +109,7 @@ const addDepartment = async () => {
 const addRole = async () => {
   const getDepartments = await db.findAllDepartments();
 
-  const departmentChoices = getDepartments.map(({ name, id }) => ({ name: name, value: id })) 
+  const departmentChoices = getDepartments.map(({ Department, ID }) => ({ name: Department, value: ID })) 
 
   const createNewRole = await inquirer.prompt ([
     {
@@ -131,17 +131,17 @@ const addRole = async () => {
   ])
 
   await db.addNewRole(createNewRole)
-  console.log('Added new role to company database')
+  console.log('Added ' + createNewRole.title + ' position to COMPANY database')
   startPrompt();
 };
 
-//ADD an EMPLOYEE*
+//ADD an EMPLOYEE
 async function addEmployee() {
   const roles = await db.findAllRoles();
   const reportTo = await db.findAllManagers();
 
-  const position = roles.map(({ title, id }) => ({ name: title, value: id })) 
-  const employeeManager = reportTo.map(({ managerName, employeeID }) => ({ name: managerName, value: employeeID }))
+  const position = roles.map(({ Position, ID }) => ({ name: Position, value: ID })) 
+  const employeeManager = reportTo.map(({ Manager, EmployeeID }) => ({ name: Manager, value: EmployeeID }))
 
   const newEmployee = await inquirer.prompt ([
     {
@@ -177,17 +177,17 @@ async function addEmployee() {
   ])
   newEmployee.manager_id = manager
   await db.addNewEmployee(newEmployee)
-  console.log(`Added new employee to company database`)
+  console.log('Added the employee ' + newEmployee.first_name + ' ' + newEmployee.last_name + ' to COMPANY database.')
   startPrompt();
 };
 
-//UPDATE an EMPLOYEE*
+//UPDATE an EMPLOYEE
 const updateRole = async () => {
   const getEmployees = await db.findAllEmployees();
   const getRoles = await db.findAllRoles();
 
-  const employeeChoices = getEmployees.map(({ Employee, ID }) => ({ name: Employee, value: ID })) 
-  const roleChoices = getRoles.map(({ title, id }) => ({ name: title, value: id })) 
+  const employeeChoices = getEmployees.map(({ Employee, EmployeeID }) => ({ name: Employee, value: EmployeeID })) 
+  const roleChoices = getRoles.map(({ Position, ID }) => ({ name: Position, value: ID })) 
 
   const { employee, employee_role } = await inquirer.prompt ([
     {
@@ -205,13 +205,13 @@ const updateRole = async () => {
   ])
 
   await db.updateEmployeeRole(employee_role, employee)
-  console.log('Employee role has been updated');
+  console.log("Employee's role has been updated");
   startPrompt();
 };
 
 //QUIT PROGRAM
 const quit = () => {
-  console.log('bye')
+  console.log('Goodbye!')
   process.exit()
 }
 

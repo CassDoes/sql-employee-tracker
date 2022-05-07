@@ -6,29 +6,38 @@ class DB {
   }
 
   findAllDepartments() {
-    return this.connection.query(`SELECT * FROM department;`)
+    return this.connection.query(`
+    SELECT id AS ID,
+    name AS Department
+    FROM department;`)
   }
 
   findAllRoles() {
-    return this.connection.query(`SELECT department.name AS Department, role.id, role.title, role.salary
+    return this.connection.query(`
+    SELECT department.name AS Department, 
+    role.id AS ID, 
+    role.title AS Position, 
+    role.salary AS Salary
     FROM role
     INNER JOIN department ON role.department_id = department.id;`);
   }
 
   findAllManagers() {
-    return this.connection.query(`SELECT CONCAT (first_name,' ',last_name) AS managerName,
-    id AS employeeID
+    return this.connection.query(`
+    SELECT CONCAT (first_name,' ',last_name) AS Manager,
+    id AS EmployeeID
     FROM employee
     WHERE manager_id IS NULL;`)
   }
 
   findAllEmployees() {
-    return this.connection.query(`SELECT employee.id AS ID, 
-    CONCAT (employee.last_name,', ',employee.first_name) AS Employee,
+    return this.connection.query(`
+    SELECT employee.id AS EmployeeID, 
+    CONCAT (employee.first_name,' ',employee.last_name) AS Employee,
     role.title AS Position,
     department.name AS Department,
     role.salary AS Salary,
-    CONCAT (manager.last_name,', ',manager.first_name) AS Manager
+    CONCAT (manager.first_name,' ',manager.last_name) AS Manager
     FROM employee
     LEFT JOIN role ON employee.role_id = role.id
     LEFT JOIN department ON role.department_id = department.id
