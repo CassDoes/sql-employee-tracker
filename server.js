@@ -4,7 +4,6 @@ const db = require('./db/DB');
 require('console.table');
 
 const startPrompt = async () => {
-  try {
     let userSelection = await inquirer.prompt({
       type: 'list',
       name: 'menu',
@@ -17,7 +16,8 @@ const startPrompt = async () => {
         'Add a department', 
         'Add a role', 
         'Add an employee', 
-        'Update an employee role'
+        'Update an employee role',
+        'Exit from program'
       ]
   });
 
@@ -54,13 +54,9 @@ const startPrompt = async () => {
       updateRole();
       break;
     
-    case 'I am done':
-      db.end();
+    default:
+      quit();
   }
-} catch (err) {
-    console.log(err);
-    startPrompt();
-  } 
 };
 
 //VIEW all DEPARTMENTS*
@@ -185,7 +181,7 @@ async function addEmployee() {
   startPrompt();
 };
 
-//UPDATE an EMPLOYEE
+//UPDATE an EMPLOYEE*
 const updateRole = async () => {
   const getEmployees = await db.findAllEmployees();
   const getRoles = await db.findAllRoles();
@@ -211,27 +207,12 @@ const updateRole = async () => {
   await db.updateEmployeeRole(employee_role, employee)
   console.log('Employee role has been updated');
   startPrompt();
-
-
-//update employee in DB
-//console that you updated the employee role
-//recall startPrompt
-
-
-  
-  // .then(employeeRole => {
-  //   const sql = `INSERT INTO role (employee_role)
-  //   VALUES (?)`;
-  //   const params = employeeRole.name
-
-  //   db.promise().query(sql, params, (err, result) => {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //   })
-  //   console.log('Added ' + employeeRole.name + ' to the COMPANY database');
-  // })
-  // .then(startPrompt);
 };
+
+//QUIT PROGRAM
+const quit = () => {
+  console.log('bye')
+  process.exit()
+}
 
 startPrompt();
