@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const { findAllDepartments } = require('./db/DB');
 const db = require('./db/DB');
 require('console.table');
 
@@ -109,40 +110,50 @@ const addDepartment = async () => {
 };
 
 //ADD a ROLE
-const addRole = () => {
-  return inquirer.prompt ([
-    {
-      type: 'input',
-      name: 'name',
-      message: "What is the name of the position you would like to add?",      
-    },
-    {
-      type: 'input',
-      name: 'salary',
-      message: "What is the salary of the position you would like to add?", 
-    },
-    {
-      type: 'input',
-      name: 'department',
-      message: "What is the department of the position you would like to add?",
-    },
-  ])
-  .then(roleData => {
-    const sql = `INSERT INTO role (title)
-    VALUES (?)`;
-    const params = roleData.name;
+const addRole = async () => {
+
+  const getDepartments = await db.findAllDepartments();
+
+  const departmentChoices = getDepartments.map(({ name, id }) => ({ name: name, value: id })) 
+  console.log(departmentChoices)
+
+
+  // const createNewRole = await inquirer.prompt ([
+  //   {
+  //     type: 'input',
+  //     name: 'title',
+  //     message: "What is the name of the position you would like to add?",      
+  //   },
+  //   {
+  //     type: 'input',
+  //     name: 'salary',
+  //     message: "What is the salary of the position you would like to add?", 
+  //   },
+  //   {
+  //     type: 'input',
+  //     name: 'department_id',
+  //     message: "What is the department of the position you would like to add?",
+  //   },
+  // ])
+
     
-    db.promise().query(sql, params, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    })
-    console.log('====================\nAdded ' + roleData.name + ' to the COMPANY database.\n====================');
-  })
-  .then (
-    displayRoles,
-    startPrompt
-    )
+  // ])
+  // .then(roleData => {
+  //   const sql = `INSERT INTO role (title)
+  //   VALUES (?)`;
+  //   const params = roleData.name;
+    
+  //   db.promise().query(sql, params, (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   })
+  //   console.log('====================\nAdded ' + roleData.name + ' to the COMPANY database.\n====================');
+  // })
+  // .then (
+  //   displayRoles,
+  //   startPrompt
+  //   )
 };
 
 //ADD an EMPLOYEE*

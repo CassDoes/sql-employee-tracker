@@ -6,7 +6,7 @@ class DB {
   }
 
   findAllDepartments() {
-    return this.connection.query(`SELECT name AS Departments FROM department;`)
+    return this.connection.query(`SELECT * FROM department;`)
   }
 
   findAllRoles() {
