@@ -68,14 +68,8 @@ async function displayDepartments() {
 
 //VIEW all ROLES*
 async function displayRoles() {
-  const mysql = require('mysql2/promise');
-  const connection = await mysql.createConnection({host:'localhost', user: 'root', password: 'My-pass6', database: 'company'});
-  const [rows, fields] = await connection.execute(`
-    SELECT role.id AS ID, role.title AS Position, role.salary AS Salary, department.name AS Department
-    FROM role
-    INNER JOIN department ON role.department_id = department.id
-  `);
-  console.table(rows);
+  const allRoles = await db.findAllRoles()
+  console.table(allRoles);
   startPrompt();
 };
 
