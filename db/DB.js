@@ -42,6 +42,10 @@ class DB {
   addNewDepartment(department) {
     return this.connection.query(`INSERT INTO department SET ?`, department)
   }
+
+  addNewRole(role) {
+    return this.connection.query(`INSERT INTO role SET ?`, role)
+  }
 }
 
 module.exports = new DB(connection);
