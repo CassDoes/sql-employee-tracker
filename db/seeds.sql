@@ -7,18 +7,18 @@ VALUES
 
 INSERT INTO role (title, salary, department_id)
 VALUES
-  ('Cosmetics Manager', '120000', 1),
-  ('Cosmetics Lead', '80000', 1),
-  ('Cosmetics Partner', '55000', 1),
-  ('Bath and Shower Manager', '130000', 2),
-  ('Bath and Shower Lead', '85000', 2),
-  ('Bath and Shower Partner', '60000', 2),
-  ('Perfume Manager', '115000', 3),
-  ('Perfume Lead', '75000', 3),
-  ('Perfume Partner', '50000', 3),
-  ('Skin and Hair Care Manager', '105000', 4),
-  ('Skin and Hair Care Lead', '60000', 4),
-  ('Skin and Hair Care Partner', '45000', 4);
+  ('Cosmetics Manager', 120000, 1),
+  ('Cosmetics Lead', 80000, 1),
+  ('Cosmetics Partner', 55000, 1),
+  ('Bath and Shower Manager', 130000, 2),
+  ('Bath and Shower Lead', 85000, 2),
+  ('Bath and Shower Partner', 60000, 2),
+  ('Perfume Manager', 115000, 3),
+  ('Perfume Lead', 75000, 3),
+  ('Perfume Partner', 50000, 3),
+  ('Skin and Hair Care Manager', 105000, 4),
+  ('Skin and Hair Care Lead', 60000, 4),
+  ('Skin and Hair Care Partner', 45000, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
