@@ -5,9 +5,7 @@
   - [Description](#description)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Credit](#credit)
   - [Contribute](#contribute)
-  - [Tests](#tests)
   - [Licenses](#licenses)
 
   ## Description
@@ -27,9 +25,6 @@
   | :-: |
   | c.doexo@gmail.com |
   | **Cassandra Hardin** |
-
-  ## Tests
-  slkdjf
 
   ## Licenses
   Copyright (c) CassDoes. All rights reserved.  
