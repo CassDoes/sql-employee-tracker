@@ -6,6 +6,7 @@
   - [Installation](#installation)
   - [Usage](#usage)
   - [Contribute](#contribute)
+  - [Tutorial](#tutorial)
   - [Licenses](#licenses)
 
   ## Description
@@ -25,6 +26,9 @@
   | :-: |
   | c.doexo@gmail.com |
   | **Cassandra Hardin** |
+
+  ## Tutorial
+  
 
   ## Licenses
   Copyright (c) CassDoes. All rights reserved.  
